@@ -8,7 +8,7 @@ import com.ll.exam.util.Ut;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.reflections.Reflections;
-
+import com.ll.exam.annotation.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -31,6 +31,8 @@ public class ControllerManager {
             for (Method method : methods) {
                 GetMapping getMapping = method.getAnnotation(GetMapping.class);
                 PostMapping postMapping = method.getAnnotation(PostMapping.class);
+                DeleteMapping deleteMapping = method.getAnnotation(DeleteMapping.class);
+                PutMapping putMapping = method.getAnnotation(PutMapping.class);
 
                 String httpMethod = null;
                 String path = null;
@@ -38,11 +40,17 @@ public class ControllerManager {
                 if (getMapping != null) {
                     path = getMapping.value();
                     httpMethod = "GET";
-                }
-                else if (postMapping != null) {
-                    path = postMapping.value();
-                    httpMethod = "POST";
-                }
+                }else if (postMapping != null) {
+                path = postMapping.value();
+                httpMethod = "POST";
+            } else if (deleteMapping != null) {
+                path = deleteMapping.value();
+                httpMethod = "DELETE";
+            }
+            else if (putMapping != null) {
+                path = putMapping.value();
+                httpMethod = "PUT";
+            }
 
                 if (path != null && httpMethod != null) {
                     String actionPath = Ut.str.beforeFrom(path, "/", 4);
